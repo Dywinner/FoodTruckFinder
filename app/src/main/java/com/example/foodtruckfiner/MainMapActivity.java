@@ -1,7 +1,9 @@
 package com.example.foodtruckfiner;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +24,11 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    public void openAddFoodTruck(View view) {
+        Intent intent = new Intent(this, FoodTruckList.class);
+        startActivity(intent);
     }
 
 
