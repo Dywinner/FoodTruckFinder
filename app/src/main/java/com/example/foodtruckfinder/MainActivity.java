@@ -1,20 +1,25 @@
-package com.example.foodtruckfiner;
+package com.example.foodtruckfinder;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.foodtruckfinder.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("message");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +29,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        myRef.setValue("Hello, World!");
     }
 
     public void openAddFoodTruck(View view) {

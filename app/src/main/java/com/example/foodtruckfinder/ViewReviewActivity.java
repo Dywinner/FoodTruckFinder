@@ -1,4 +1,4 @@
-package com.example.foodtruckfiner;
+package com.example.foodtruckfinder;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.foodtruckfinder.R;
 
 public class ViewReviewActivity extends AppCompatActivity{
 

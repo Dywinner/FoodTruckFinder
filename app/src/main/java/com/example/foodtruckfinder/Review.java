@@ -1,4 +1,4 @@
-package com.example.foodtruckfiner;
+package com.example.foodtruckfinder;
 
 import android.support.design.internal.ParcelableSparseArray;
 

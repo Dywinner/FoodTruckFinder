@@ -10,7 +10,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="302dp"
-        tools:context="com.example.foodtruckfiner.MainMapActivity" />
+        tools:context="com.example.foodtruckfiner.com.example.foodtruckfinder.MainMapActivity" />
 
     <Button
         android:id="@+id/gpsButton"

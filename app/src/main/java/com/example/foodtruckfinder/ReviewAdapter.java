@@ -1,4 +1,4 @@
-package com.example.foodtruckfiner;
+package com.example.foodtruckfinder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,11 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import java.util.Collections;
+import com.example.foodtruckfinder.R;
+
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
