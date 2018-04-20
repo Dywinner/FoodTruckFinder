@@ -1,6 +1,5 @@
 package com.example.foodtruckfinder;
 
-import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
@@ -16,13 +15,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.example.foodtruckfinder.R;
-
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    FloatingActionButton fab;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private FloatingActionButton fab;
+    private DatabaseReference database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,19 +31,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         fab = findViewById(R.id.fab);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Added Truck", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                AddFoodTruck(view);
             }
         });
+
+
     }
 
-    public void openAddFoodTruck(View view) {
-        Intent intent = new Intent(this, FoodTruckList.class);
-        startActivity(intent);
+    public void AddFoodTruck(View view) {
+        System.out.println("here");
+        FoodTruck truck = new FoodTruck("test", 0.0, 0.0);
+        Integer id = 0;
+        final String userId = "1";
+        database = FirebaseDatabase.getInstance().getReference("truck");
+        database.push().setValue(truck);
     }
 
 
@@ -67,5 +70,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+
     }
 }
