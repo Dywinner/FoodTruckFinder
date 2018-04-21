@@ -5,21 +5,20 @@ package com.example.foodtruckfinder;
  */
 
 public class FoodTruck {
-    public Double longitude;
-    public Double latitude;
+    private Double mLongitude;
+    private Double mLatitude;
 
-    public String name;
+    private String mName;
 
     public FoodTruck() {
-        this.longitude = 0.0;
-        this.latitude = 0.0;
-        this.name = "";
-
+        this.mLongitude = 0.0;
+        this.mLatitude = 0.0;
+        this.mName = "";
     }
 
     public FoodTruck(String name, Double longitude, Double latitude) {
-        this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
+        this.mName = name;
+        this.mLongitude = longitude;
+        this.mLatitude = latitude;
     }
 }
