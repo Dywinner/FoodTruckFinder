@@ -1,8 +1,14 @@
 package com.example.foodtruckfinder;
 
 import android.content.Intent;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,6 +25,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
 
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    private ViewPager mViewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +37,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.maintabs);
+
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
     }
 
     public void openAddFoodTruck(View view) {
@@ -35,15 +57,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -52,5 +65,33 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+
+            switch (position) {
+                case 0:
+                    OverviewFragment of = new OverviewFragment();
+                    return of;
+
+                case 1:
+                    ReviewsFragment rf = new ReviewsFragment();
+                    return rf;
+
+                default:
+                    return null;
+            }
+        }
+        @Override
+        public int getCount() {
+            return 2;
+        }
     }
 }
