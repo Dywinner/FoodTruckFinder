@@ -21,4 +21,16 @@ public class FoodTruck {
         this.mLongitude = longitude;
         this.mLatitude = latitude;
     }
+
+    public String getName() {
+        return this.mName;
+    }
+
+    public Double getLatitude() {
+        return this.mLatitude;
+    }
+
+    public Double getLongitutde() {
+        return this.mLongitude;
+    }
 }

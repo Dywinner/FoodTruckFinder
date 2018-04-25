@@ -59,10 +59,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                addFoodTruck(view);
                 Snackbar.make(view, "Added Truck", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
 
@@ -141,7 +144,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void addFoodTruck(View view) {
+        // get location
+        getDeviceLocation();
+        Double longitude = ((Double) mLastKnownLocation.getLongitude());
+        Double latitude = ((Double) mLastKnownLocation.getLatitude());
+        FoodTruck truck = new FoodTruck("test", longitude, latitude);
 
+        mDatabase.child("foodtrucks").push().setValue(truck);
     }
 
 
