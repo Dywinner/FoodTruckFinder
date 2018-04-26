@@ -12,9 +12,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
@@ -24,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap.OnCameraMoveListener;
+import com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -36,6 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,17 +49,14 @@ import java.util.Map;
  * An activity that displays a map showing the place at the device's current location.
  */
 public class MainActivity extends AppCompatActivity implements
+        OnCameraMoveStartedListener,
         OnCameraMoveListener,
         OnMapReadyCallback {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private GoogleMap mMap;
-    private FoodTruck[] trucks;
+    private ArrayList<FoodTruck> trucks;
     private CameraPosition mCameraPosition;
-
-    // The entry points to the Places API.
-    private GeoDataClient mGeoDataClient;
-    private PlaceDetectionClient mPlaceDetectionClient;
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -90,12 +92,6 @@ public class MainActivity extends AppCompatActivity implements
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_main);
 
-        // Construct a GeoDataClient.
-        mGeoDataClient = Places.getGeoDataClient(this, null);
-
-        // Construct a PlaceDetectionClient.
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -118,8 +114,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        trucks = new FoodTruck[100];
+        trucks = new ArrayList<>(10);
 
     }
 
@@ -189,6 +184,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap map) {
         mMap = map;
 
+        mMap.setOnCameraMoveStartedListener(this);
+        mMap.setOnCameraMoveListener(this);
+
         // Prompt the user for permission.
         while(!mLocationPermissionGranted) {
             getLocationPermission();
@@ -200,12 +198,53 @@ public class MainActivity extends AppCompatActivity implements
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-        // find nearby food trucks from database and create markers
+        //Move camera to make markers appear
+        //mMap.moveCamera();
+
+
     }
 
     @Override
     public void onCameraMove() {
         // update list of nearby food trucks
+
+        // find nearby food trucks from database and create markers
+        GeoFire geoFire= new GeoFire(FirebaseDatabase.getInstance().getReference().child("geofire"));
+        final GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(mMap.getCameraPosition().target.longitude, mMap.getCameraPosition().target.latitude), 10);
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                //key has entered search area, add it to local list
+
+                // check local list size, if too large, replace random marker
+                System.out.println(key);
+
+            }
+            @Override
+            public void onKeyExited(String key) {
+                System.out.println(String.format("Key %s is no longer in the search area", key));
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                System.out.println("All initial data has been loaded and events have been fired!");
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+                System.err.println("There was an error with this query: " + error);
+            }
+        });
+
+    }
+
+    @Override
+    public void onCameraMoveStarted(int reason) {
 
     }
 
