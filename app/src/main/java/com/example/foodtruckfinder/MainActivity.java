@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        localTrucks = new HashMap<>(10);
+        localTrucks = new HashMap<>();
 
 
     }
@@ -261,18 +261,16 @@ public class MainActivity extends AppCompatActivity implements
         return distance/2000;
     }
 
-    private Map<String, FoodTruck> getLocalTrucks(GeoLocation geoLocation, float radius) {
-        Map<String, FoodTruck> truckMap = new HashMap<>(10);
+    private void getLocalTrucks(GeoLocation geoLocation, float radius) {
 
         GeoFire geoFire= new GeoFire(FirebaseDatabase.getInstance().getReference().child("geofire"));
         GeoQuery geoQuery = geoFire.queryAtLocation(geoLocation, radius);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onKeyEntered(final String key, GeoLocation location) {
+            public void onKeyEntered(final String key, final GeoLocation location) {
                 //key has entered search area, add it to local list
 
                 // check local list size, if too large, replace random marker
-                System.out.println(key);
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("foodtrucks");
 
 
@@ -280,8 +278,13 @@ public class MainActivity extends AppCompatActivity implements
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Data is ordered by increasing height, so we want the first entry
-                        System.out.println(dataSnapshot.getValue());
+
+                        FoodTruck truck = dataSnapshot.child(key).getValue(FoodTruck.class);
+                        //System.out.println("Truck name: " + truck.getName());
+                        truck.setLatitude(location.latitude);
+                        truck.setLongitude(location.longitude);
+                        localTrucks.put(key, truck);
+
                     }
 
                     @Override
@@ -313,7 +316,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        return truckMap;
     }
 
     @Override
@@ -330,11 +332,16 @@ public class MainActivity extends AppCompatActivity implements
     public void onCameraIdle() {
         System.out.println("Camera Idle");
 
-        // update list of nearby food trucks
-
         // find nearby food trucks from database and create markers
         GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
         getLocalTrucks(geoLocation, getCameraRadius());
+
+        for(FoodTruck truck: localTrucks.values()) {
+            mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(truck.getLatitude(), truck.getLongitude()))
+                .title(truck.getName())
+            );
+        }
 
     }
 
