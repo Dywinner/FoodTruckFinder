@@ -55,7 +55,6 @@ public class MainMapActivity extends FragmentActivity  {
         @Override
         public Fragment getItem(int position) {
 
-
             switch (position) {
                 case 0:
                     MapFragment mp = new MapFragment();
