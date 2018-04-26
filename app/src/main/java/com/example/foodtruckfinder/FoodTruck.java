@@ -1,5 +1,7 @@
 package com.example.foodtruckfinder;
 
+import java.util.Calendar;
+
 /**
  * Created by samprescott on 4/19/18.
  */
@@ -9,6 +11,7 @@ public class FoodTruck {
     private Double mLatitude;
 
     private String mName;
+
 
     public FoodTruck() {
         this.mLongitude = 0.0;

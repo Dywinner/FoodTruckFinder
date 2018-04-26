@@ -49,7 +49,12 @@
         <activity
             android:name="com.example.foodtruckfinder.AddReview"
             android:label="@string/title_activity_add_review"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.example.foodtruckfinder.AddFoodTruck"
+            android:label="AddFoodTruck"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.example.foodtruckfinder;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -37,6 +38,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+
+import java.util.Map;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -124,12 +128,21 @@ public class MainActivity extends AppCompatActivity
             return false;
         }
 
-        Double longitude = ((Double) mLastKnownLocation.getLongitude());
-        Double latitude = ((Double) mLastKnownLocation.getLatitude());
-        FoodTruck truck = new FoodTruck("test", longitude, latitude);
+        Intent intent = new Intent(this, AddFoodTruck.class);
+        startActivityForResult(intent, 1);
 
-        mDatabase.child("foodtrucks").push().setValue(truck);
+
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == 1) {
+            String name = data.getStringExtra("name_data");
+            FoodTruck truck = new FoodTruck(name, mLastKnownLocation.getLongitude(), mLastKnownLocation.getLatitude());
+
+            mDatabase.child("foodtrucks").push().setValue(truck);
+        }
     }
 
     /**
