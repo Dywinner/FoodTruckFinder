@@ -2,6 +2,7 @@ package com.example.foodtruckfinder;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,20 +29,28 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap.OnCameraMoveListener;
 import com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener;
+import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,11 +60,12 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements
         OnCameraMoveStartedListener,
         OnCameraMoveListener,
+        OnCameraIdleListener,
         OnMapReadyCallback {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private GoogleMap mMap;
-    private ArrayList<FoodTruck> trucks;
+    private Map<String, FoodTruck> localTrucks;
     private CameraPosition mCameraPosition;
 
     // The entry point to the Fused Location Provider.
@@ -114,11 +124,12 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        trucks = new ArrayList<>(10);
+        localTrucks = new HashMap<>(10);
+
 
     }
 
-    public boolean addFoodTruck(View view) {
+    private boolean addFoodTruck(View view) {
 
         if(mLastKnownLocation == null) {
             return false;
@@ -145,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements
 
             //must use this constructor, does not work without CompletionListener
             geoFire.setLocation(userId,
-                    new GeoLocation(mLastKnownLocation.getLongitude(), mLastKnownLocation.getLatitude()),
+                    new GeoLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()),
                     new GeoFire.CompletionListener() {
 
                         @Override
@@ -186,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnCameraMoveListener(this);
+        mMap.setOnCameraIdleListener(this);
 
         // Prompt the user for permission.
         while(!mLocationPermissionGranted) {
@@ -199,27 +211,87 @@ public class MainActivity extends AppCompatActivity implements
         getDeviceLocation();
 
         //Move camera to make markers appear
-        //mMap.moveCamera();
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(mFusedLocationProviderClient.getLastLocation()));
 
 
     }
 
-    @Override
-    public void onCameraMove() {
-        // update list of nearby food trucks
+    /**
+     * Functions: getCameraRadius
+     *
+     * @return returns radius in kilometers
+     *
+     */
+    private float getCameraRadius() {
+        VisibleRegion visibleRegion = mMap.getProjection().getVisibleRegion();
+        LatLng farRight = visibleRegion.farRight;
+        LatLng farLeft = visibleRegion.farLeft;
+        LatLng nearRight = visibleRegion.nearRight;
+        LatLng nearLeft = visibleRegion.nearLeft;
 
-        // find nearby food trucks from database and create markers
+        float[] distanceWidth = new float[2];
+        Location.distanceBetween(
+                (farRight.latitude+nearRight.latitude)/2,
+                (farRight.longitude+nearRight.longitude)/2,
+                (farLeft.latitude+nearLeft.latitude)/2,
+                (farLeft.longitude+nearLeft.longitude)/2,
+                distanceWidth
+        );
+
+
+        float[] distanceHeight = new float[2];
+        Location.distanceBetween(
+                (farRight.latitude+nearRight.latitude)/2,
+                (farRight.longitude+nearRight.longitude)/2,
+                (farLeft.latitude+nearLeft.latitude)/2,
+                (farLeft.longitude+nearLeft.longitude)/2,
+                distanceHeight
+        );
+
+
+
+        float distance = 0;
+
+        if (distanceWidth[0]>distanceHeight[0]){
+            distance = distanceWidth[0];
+        } else {
+            distance = distanceHeight[0];
+        }
+
+        return distance/2000;
+    }
+
+    private Map<String, FoodTruck> getLocalTrucks(GeoLocation geoLocation, float radius) {
+        Map<String, FoodTruck> truckMap = new HashMap<>(10);
+
         GeoFire geoFire= new GeoFire(FirebaseDatabase.getInstance().getReference().child("geofire"));
-        final GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(mMap.getCameraPosition().target.longitude, mMap.getCameraPosition().target.latitude), 10);
+        GeoQuery geoQuery = geoFire.queryAtLocation(geoLocation, radius);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onKeyEntered(String key, GeoLocation location) {
+            public void onKeyEntered(final String key, GeoLocation location) {
                 //key has entered search area, add it to local list
 
                 // check local list size, if too large, replace random marker
                 System.out.println(key);
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("foodtrucks");
 
-            }
+
+                Query query = ref.orderByKey().equalTo(key);
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Data is ordered by increasing height, so we want the first entry
+                        System.out.println(dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // ...
+                    }
+                });
+
+
+                }
             @Override
             public void onKeyExited(String key) {
                 System.out.println(String.format("Key %s is no longer in the search area", key));
@@ -241,10 +313,28 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        return truckMap;
+    }
+
+    @Override
+    public void onCameraMove() {
+
     }
 
     @Override
     public void onCameraMoveStarted(int reason) {
+
+    }
+
+    @Override
+    public void onCameraIdle() {
+        System.out.println("Camera Idle");
+
+        // update list of nearby food trucks
+
+        // find nearby food trucks from database and create markers
+        GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+        getLocalTrucks(geoLocation, getCameraRadius());
 
     }
 
