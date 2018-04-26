@@ -1,4 +1,4 @@
-package com.example.foodtruckfiner;
+package com.example.foodtruckfinder;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.foodtruckfinder.R;
 
 import java.util.ArrayList;
 

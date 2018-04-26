@@ -53,11 +53,14 @@
             android:name="com.example.foodtruckfinder.AddReview"
             android:label="@string/title_activity_add_review"
             android:theme="@style/AppTheme.NoActionBar" />
+<<<<<<< HEAD
+=======
         <activity
             android:name="com.example.foodtruckfinder.AddFoodTruck"
             android:label="AddFoodTruck"
             android:theme="@style/AppTheme.NoActionBar" />
 
+>>>>>>> d7dfba410a1375bbade7651c4dca03255282507d
     </application>
 
 </manifest>
