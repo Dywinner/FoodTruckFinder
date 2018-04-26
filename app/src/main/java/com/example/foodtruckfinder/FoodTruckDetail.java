@@ -12,9 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.foodtruckfinder.R;
-
-public class FoodTruckList extends AppCompatActivity {
+public class FoodTruckDetail extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -34,7 +32,7 @@ public class FoodTruckList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_food_truck_list);
+        setContentView(R.layout.activity_food_truck_detail);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

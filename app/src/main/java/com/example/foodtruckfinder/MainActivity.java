@@ -1,9 +1,8 @@
 package com.example.foodtruckfinder;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,10 +10,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -22,38 +21,29 @@ import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap.OnCameraMoveListener;
 import com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener;
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements
         OnCameraMoveStartedListener,
         OnCameraMoveListener,
         OnCameraIdleListener,
+        OnMapLongClickListener,
         OnMapReadyCallback {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -129,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements
         localTrucks = new HashMap<>();
 
 
+
     }
 
     private boolean addFoodTruck(View view) {
@@ -138,11 +130,15 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         Intent intent = new Intent(this, AddFoodTruck.class);
+        intent.putExtra("lat_data", mLastKnownLocation.getLatitude());
+        intent.putExtra("long_data", mLastKnownLocation.getLongitude());
         startActivityForResult(intent, 1);
 
 
         return true;
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -156,9 +152,12 @@ public class MainActivity extends AppCompatActivity implements
             ref.child("foodtrucks").child(userId).setValue(truck);
             GeoFire geoFire = new GeoFire(ref.child("geofire"));
 
+            String latitude = data.getStringExtra("lat_data");
+            String longitude = data.getStringExtra("long_data");
+
             //must use this constructor, does not work without CompletionListener
             geoFire.setLocation(userId,
-                    new GeoLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()),
+                    new GeoLocation(Double.parseDouble(latitude), Double.parseDouble(longitude)),
                     new GeoFire.CompletionListener() {
 
                         @Override
@@ -172,7 +171,13 @@ public class MainActivity extends AppCompatActivity implements
 
                     });
 
+            placeLocalMarkers();
+
             //mDatabase.child("foodtrucks").push().setValue(truck);
+        }
+
+        if(resultCode == 2) {
+
         }
     }
 
@@ -186,6 +191,38 @@ public class MainActivity extends AppCompatActivity implements
             outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
             super.onSaveInstanceState(outState);
         }
+    }
+
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        final LatLng tempLatLng = latLng;
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        Intent intent = new Intent(MainActivity.this, AddFoodTruck.class);
+                        intent.putExtra("lat_data", tempLatLng.latitude);
+                        intent.putExtra("long_data", tempLatLng.longitude);
+                        startActivityForResult(intent, 1);
+                        finish();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Add new Food Truck here?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+
+
+
     }
 
 
@@ -205,11 +242,13 @@ public class MainActivity extends AppCompatActivity implements
             public void onInfoWindowClick(Marker marker) {
                 FoodTruck temp = (FoodTruck) marker.getTag();
                 System.out.println(temp.getName());
-                Intent intent = new Intent(MainActivity.this, FoodTruckList.class);
+                Intent intent = new Intent(MainActivity.this, FoodTruckDetail.class);
                 intent.putExtra("name_data", temp.getName());
                 startActivity(intent);
             }
         });
+
+        mMap.setOnMapLongClickListener(this);
 
         // Prompt the user for permission.
         while(!mLocationPermissionGranted) {

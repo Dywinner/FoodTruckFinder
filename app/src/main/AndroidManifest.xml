@@ -43,7 +43,7 @@
             android:label="ViewReviewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.example.foodtruckfinder.FoodTruckList"
+            android:name="com.example.foodtruckfinder.FoodTruckDetail"
             android:label="@string/title_activity_food_truck_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
