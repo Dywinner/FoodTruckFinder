@@ -1,5 +1,6 @@
 package com.example.foodtruckfinder;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap.OnCameraMoveListener;
 import com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener;
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -198,6 +200,16 @@ public class MainActivity extends AppCompatActivity implements
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnCameraMoveListener(this);
         mMap.setOnCameraIdleListener(this);
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                FoodTruck temp = (FoodTruck) marker.getTag();
+                System.out.println(temp.getName());
+                Intent intent = new Intent(MainActivity.this, FoodTruckList.class);
+                intent.putExtra("name_data", temp.getName());
+                startActivity(intent);
+            }
+        });
 
         // Prompt the user for permission.
         while(!mLocationPermissionGranted) {
@@ -210,14 +222,12 @@ public class MainActivity extends AppCompatActivity implements
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-        //Move camera to make markers appear
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(mFusedLocationProviderClient.getLastLocation()));
-
+        placeLocalMarkers();
 
     }
 
     /**
-     * Functions: getCameraRadius
+     * Function: getCameraRadius
      *
      * @return returns radius in kilometers
      *
@@ -328,21 +338,24 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    @Override
-    public void onCameraIdle() {
-        System.out.println("Camera Idle");
-
+    private void placeLocalMarkers() {
         // find nearby food trucks from database and create markers
         GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
         getLocalTrucks(geoLocation, getCameraRadius());
 
         for(FoodTruck truck: localTrucks.values()) {
             mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(truck.getLatitude(), truck.getLongitude()))
-                .title(truck.getName())
-            );
+                    .position(new LatLng(truck.getLatitude(), truck.getLongitude()))
+                    .title(truck.getName())
+            ).setTag(truck);
         }
+    }
 
+    @Override
+    public void onCameraIdle() {
+        System.out.println("Camera Idle");
+
+        placeLocalMarkers();
     }
 
     /**
