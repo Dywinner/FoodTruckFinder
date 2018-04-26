@@ -244,6 +244,9 @@ public class MainActivity extends AppCompatActivity implements
                 System.out.println(temp.getName());
                 Intent intent = new Intent(MainActivity.this, FoodTruckDetail.class);
                 intent.putExtra("name_data", temp.getName());
+                intent.putExtra("lat_data", temp.getLatitude());
+                intent.putExtra("long_data", temp.getLatitude());
+
                 startActivity(intent);
             }
         });

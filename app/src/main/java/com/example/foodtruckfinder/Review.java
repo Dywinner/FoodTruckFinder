@@ -7,11 +7,13 @@ import java.util.ArrayList;
 public class Review extends ParcelableSparseArray {
 
     private String mName;
+    private String mTitle;
     private String mDescription;
     private int mRating;
 
-    public Review(String name, String description, int rating) {
+    public Review(String name, String title, String description, int rating) {
         mName = name;
+        mTitle = title;
         mDescription = description;
         mRating = rating;
 
@@ -24,6 +26,13 @@ public class Review extends ParcelableSparseArray {
 
     public void setmName(String name) {
         mName = name;
+    }
+    public String getmTitle() {
+        return mTitle;
+    }
+
+    public void setmTitle(String title) {
+        mTitle = title;
     }
 
     public String getmDescription() {
@@ -41,7 +50,7 @@ public class Review extends ParcelableSparseArray {
         ArrayList<Review> reviewItems = new ArrayList<Review>();
 
         for (int i = 1; i <= numItems; i++) {
-            reviewItems.add(new Review("Dylan Nguyen", "This will be the final message from Saigon station. It has been a long fight and we have lost it.…Those who fail to learn from history are forced to repeat it. Let us hope that we will not have another Vietnam experience and that we have learned our lesson. Saigon signing off.", 0));
+            reviewItems.add(new Review("Dylan Nguyen", "Review Title","This will be the final message from Saigon station. It has been a long fight and we have lost it.…Those who fail to learn from history are forced to repeat it. Let us hope that we will not have another Vietnam experience and that we have learned our lesson. Saigon signing off.", 0));
         }
         return reviewItems;
     }

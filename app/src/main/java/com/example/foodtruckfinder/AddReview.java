@@ -35,6 +35,7 @@ public class AddReview extends AppCompatActivity {
                 String name = nameText.getText().toString();
                 String description = descriptionText.getText().toString();
                 String rating2 = ratingText.getText().toString();
+                String title = "pie";
                 int rating = Integer.parseInt(rating2);
 
 
@@ -43,6 +44,7 @@ public class AddReview extends AppCompatActivity {
                 intent.putExtra("name_data", name);
                 intent.putExtra("description_data", description );
                 intent.putExtra("rating_data", rating);
+                intent.putExtra("title_data", title);
                 setResult(1, intent);
                 finish();
             }

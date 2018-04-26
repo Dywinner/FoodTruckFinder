@@ -58,6 +58,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
                         Intent intent = new Intent(v.getContext(), ViewReviewActivity.class);
                         Log.println(Log.ASSERT, "hello" + getItemId(), "hello");
                         intent.putExtra("name_data", rItems.get(getAdapterPosition()).getmName());
+                        intent.putExtra("title_data", rItems.get(getAdapterPosition()).getmTitle());
                         intent.putExtra("description_data", rItems.get(getAdapterPosition()).getmDescription());
                         intent.putExtra("rating_data", rItems.get(getAdapterPosition()).getmRating());
                         intent.putExtra("pos_data", getAdapterPosition());
@@ -105,7 +106,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
 
             TextView textView2 = viewHolder.descTextView;
-            textView2.setText(item.getmDescription());
+            textView2.setText(item.getmTitle());
             textView2.setClickable(false);
             textView2.setActivated(false);
             textView2.setEnabled(false);

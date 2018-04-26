@@ -61,4 +61,15 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
+    <Button
+        android:id="@+id/shareTruckButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="openGmail"
+        android:paddingBottom="16dp"
+        android:text="Share Truck"
+        android:layout_gravity="center_vertical|center_horizontal"
+        />
+
+
 </android.support.design.widget.CoordinatorLayout>

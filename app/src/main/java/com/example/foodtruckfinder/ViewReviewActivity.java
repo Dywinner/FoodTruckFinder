@@ -14,6 +14,7 @@ import com.example.foodtruckfinder.R;
 public class ViewReviewActivity extends AppCompatActivity{
 
     TextView nameText;
+    TextView titleText;
     TextView descriptionText;
     TextView ratingText;
 
@@ -26,11 +27,16 @@ public class ViewReviewActivity extends AppCompatActivity{
         final String name = intent.getExtras().getString("name_data");
         final String description = intent.getExtras().getString("description_data");
         final int rating = intent.getExtras().getInt("rating_data");
+        final String title = intent.getExtras().getString("title_data");
 
 
         nameText = (TextView) findViewById(R.id.textView1);
         String pie3 = "Author: " + name;
         nameText.setText(pie3);
+
+        titleText = (TextView) findViewById(R.id.textView1);
+        String pie4 = "Author: " + title;
+        nameText.setText(pie4);
 
         descriptionText = (TextView) findViewById(R.id.textView2);
         String pie2 = "Description: " + description;

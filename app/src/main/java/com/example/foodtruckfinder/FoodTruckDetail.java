@@ -1,5 +1,7 @@
 package com.example.foodtruckfinder;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,8 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class FoodTruckDetail extends AppCompatActivity {
 
@@ -28,7 +32,7 @@ public class FoodTruckDetail extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
+    private Button shareTruck;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +83,15 @@ public class FoodTruckDetail extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openGmail(View view) {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", "abc@gmail.com", null));
+        String latLng = "(" + getIntent().getStringExtra("lat_data") + ", " + getIntent().getStringExtra("lon_data") + ")";
+
+        emailIntent.putExtra(Intent.EXTRA_TEXT, latLng);
+        startActivity(Intent.createChooser(emailIntent, null));
     }
 
     /**
