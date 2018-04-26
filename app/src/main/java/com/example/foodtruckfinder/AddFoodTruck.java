@@ -12,8 +12,8 @@ import android.view.View;
  */
 
 public class AddFoodTruck extends AppCompatActivity {
-    EditText nameText;
-    Button submit;
+    private EditText nameText;
+    private Button submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,6 +1,5 @@
 package com.example.foodtruckfinder;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,25 +9,21 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.GoogleMap.OnCameraMoveListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -36,20 +31,25 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
  */
-public class MainActivity extends AppCompatActivity
-        implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements
+        OnCameraMoveListener,
+        OnMapReadyCallback {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private GoogleMap mMap;
+    private FoodTruck[] trucks;
     private CameraPosition mCameraPosition;
 
     // The entry points to the Places API.
@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        trucks = new FoodTruck[100];
 
     }
 
@@ -137,11 +138,33 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == 1) {
+        if(resultCode == 1) { //addFoodTruck
             String name = data.getStringExtra("name_data");
-            FoodTruck truck = new FoodTruck(name, mLastKnownLocation.getLongitude(), mLastKnownLocation.getLatitude());
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-            mDatabase.child("foodtrucks").push().setValue(truck);
+            FoodTruck truck = new FoodTruck(name);
+
+            String userId = ref.child("foodtrucks").push().getKey();
+            ref.child("foodtrucks").child(userId).setValue(truck);
+            GeoFire geoFire = new GeoFire(ref.child("geofire"));
+
+            //must use this constructor, does not work without CompletionListener
+            geoFire.setLocation(userId,
+                    new GeoLocation(mLastKnownLocation.getLongitude(), mLastKnownLocation.getLatitude()),
+                    new GeoFire.CompletionListener() {
+
+                        @Override
+                        public void onComplete(String key, DatabaseError error) {
+                            if (error != null) {
+                                System.err.println("There was an error saving the location to GeoFire: " + error);
+                            } else {
+                                System.out.println("Location saved on server successfully!");
+                            }
+                        }
+
+                    });
+
+            //mDatabase.child("foodtrucks").push().setValue(truck);
         }
     }
 
@@ -167,7 +190,7 @@ public class MainActivity extends AppCompatActivity
         mMap = map;
 
         // Prompt the user for permission.
-        while(mLocationPermissionGranted == false) {
+        while(!mLocationPermissionGranted) {
             getLocationPermission();
         }
 
@@ -176,7 +199,14 @@ public class MainActivity extends AppCompatActivity
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
-        System.out.println(mLocationPermissionGranted);
+
+        // find nearby food trucks from database and create markers
+    }
+
+    @Override
+    public void onCameraMove() {
+        // update list of nearby food trucks
+
     }
 
     /**
