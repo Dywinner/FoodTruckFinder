@@ -66,6 +66,8 @@ public class AddFoodTruck extends AppCompatActivity {
             takePictureButton.setEnabled(false);
             ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE }, TAKE_PHOTO_PERMISSION);
         }
+
+
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 takePicture(v);
@@ -133,20 +135,25 @@ public class AddFoodTruck extends AppCompatActivity {
         if (requestCode == REQUEST_TAKE_PHOTO) {
             // Add here.
             if (resultCode == RESULT_OK) {
+                System.out.println("file" + file);
                 imageView.setImageURI(file);
             }
         }
         else if (requestCode == PICK_IMAGE_REQUEST) {
             //Add here.
-            Uri uri = data.getData();
+            Uri uri = null;
+            if(data != null) {
+                uri = data.getData();
 
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                // Log.d(TAG, String.valueOf(bitmap));
-                ImageView imageView = (ImageView) findViewById(R.id.imageView);
-                imageView.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    // Log.d(TAG, String.valueOf(bitmap));
+                    ImageView imageView = (ImageView) findViewById(R.id.imageView);
+                    imageView.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
 
         }
