@@ -8,7 +8,13 @@ import android.arch.persistence.room.*;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(foreignKeys = @ForeignKey(entity = FoodTruckEntity.class, parentColumns = "id", childColumns = "foodTruckId", onDelete = CASCADE))
+@Entity(tableName = "reviews",
+        foreignKeys = @ForeignKey(
+                entity = FoodTruckEntity.class,
+                parentColumns = "id",
+                childColumns = "foodTruckId", onDelete = CASCADE
+        )
+)
 public class ReviewEntity {
 
     @PrimaryKey(autoGenerate = true)
