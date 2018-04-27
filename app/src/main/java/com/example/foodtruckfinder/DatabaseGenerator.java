@@ -135,13 +135,13 @@ public class DatabaseGenerator {
         }
     }
 
-    public List<ReviewEntity> getFoodTruckReviewEntityList(Integer food_truck_id) throws InterruptedException, ExecutionException, TimeoutException {
+    public List<ReviewEntity> getFoodTruckReviewEntityList(String food_truck_id) throws InterruptedException, ExecutionException, TimeoutException {
         getFoodTruckReviewsAsyncTask getFoodTruckReviewsAsyncTask = new getFoodTruckReviewsAsyncTask(reviewDao);
         getFoodTruckReviewsAsyncTask.execute(food_truck_id);
         return getFoodTruckReviewsAsyncTask.get(30, TimeUnit.SECONDS);
     }
 
-    private static class getFoodTruckReviewsAsyncTask extends AsyncTask<Integer, Void, List<ReviewEntity>> {
+    private static class getFoodTruckReviewsAsyncTask extends AsyncTask<String, Void, List<ReviewEntity>> {
         private ReviewDao mAsyncTaskDao;
 
         getFoodTruckReviewsAsyncTask(ReviewDao dao) {
@@ -149,7 +149,8 @@ public class DatabaseGenerator {
         }
 
         @Override
-        protected List<ReviewEntity> doInBackground(final Integer... params) {
+        protected List<ReviewEntity> doInBackground(final String... params) {
+            System.out.println("from inside db: " + params[0]);
             return mAsyncTaskDao.getFoodTruckReviews(params[0]);
         }
 

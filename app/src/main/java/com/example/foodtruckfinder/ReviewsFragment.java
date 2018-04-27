@@ -34,11 +34,13 @@ public class ReviewsFragment extends Fragment {
 
         String id = getArguments().getString("food_truck_id_data");
 
+        System.out.println("from fragment: " + id);
+
         dbg = new DatabaseGenerator(this.getActivity().getApplication());
 
         List<ReviewEntity> reviewEntities = null;
         try {
-            reviewEntities = dbg.getFoodTruckReviewEntityList(Integer.getInteger(id));
+            reviewEntities = dbg.getReviewEntityList();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -47,10 +49,15 @@ public class ReviewsFragment extends Fragment {
             e.printStackTrace();
         }
 
+        items = new ArrayList<>();
+
         for(ReviewEntity reviewEntity: reviewEntities) {
+
             Review review = new Review(reviewEntity.name, reviewEntity.title, reviewEntity.description, reviewEntity.rating);
             items.add(review);
         }
+
+
 
         // Initialize items
         // Create adapter passing in the sample user data
