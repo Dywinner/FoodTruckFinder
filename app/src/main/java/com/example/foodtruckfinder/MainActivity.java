@@ -116,13 +116,7 @@ public class MainActivity extends AppCompatActivity implements
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(addFoodTruck(view)) {
-                    Snackbar.make(view, "Added Food Truck Location", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                } else {
-                    Snackbar.make(view, "Could not add Food Truck Location", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
+                addFoodTruck(view);
             }
         });
 

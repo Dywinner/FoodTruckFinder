@@ -86,7 +86,7 @@ public class AddFoodTruck extends AppCompatActivity {
                 intent.putExtra("name_data", name);
                 intent.putExtra("lat_data", latitude);
                 intent.putExtra("long_data", longitude);
-                setResult(2, intent);
+                setResult(1, intent);
                 finish();
             }
         });
