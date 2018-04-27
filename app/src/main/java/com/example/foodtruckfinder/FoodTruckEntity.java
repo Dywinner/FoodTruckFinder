@@ -6,11 +6,11 @@ import android.arch.persistence.room.*;
  * Created by samprescott on 4/26/18.
  */
 
-@Entity (tableName = "foodtruck")
+@Entity (tableName = "foodtrucks")
 public class FoodTruckEntity {
 
     @PrimaryKey (autoGenerate = true)
-    public String id;
+    public int id;
 
     @ColumnInfo(name = "name")
     public String name;

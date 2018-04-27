@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements
 
         FoodTruckFinderDatabase db = FoodTruckFinderDatabase.getDatabase(this);
         foodTruckDao = db.getFoodTruckDao();
-        
 
 
 
@@ -186,7 +185,10 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         if(resultCode == 2) {
-
+            String name = data.getStringExtra("name_data");
+            String latitude = data.getStringExtra("lat_data");
+            String longitude = data.getStringExtra("long_data");
+            System.out.println("we're in two, getting ready to test");
         }
     }
 

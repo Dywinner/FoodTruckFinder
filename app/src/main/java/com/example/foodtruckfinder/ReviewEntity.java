@@ -12,13 +12,13 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         foreignKeys = @ForeignKey(
                 entity = FoodTruckEntity.class,
                 parentColumns = "id",
-                childColumns = "foodTruckId", onDelete = CASCADE
+                childColumns = "food_truck_id", onDelete = CASCADE
         )
 )
 public class ReviewEntity {
 
     @PrimaryKey(autoGenerate = true)
-    public String id;
+    public int id;
 
     @ColumnInfo(name = "name")
     public String name;

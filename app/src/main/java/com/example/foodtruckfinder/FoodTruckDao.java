@@ -14,7 +14,7 @@ import java.util.List;
 @Dao
 public interface FoodTruckDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(FoodTruck foodTruck);
+    void insert(FoodTruckEntity ... foodTruckEntity);
 
     @Query("SELECT * FROM foodtrucks")
     List<FoodTruckEntity> getLocalFoodTrucks();
