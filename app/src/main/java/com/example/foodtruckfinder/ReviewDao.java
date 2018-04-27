@@ -14,7 +14,10 @@ public interface ReviewDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Review review);
 
-    @Query("SELECT * FROM reviews ORDER BY ")
-    List<FoodTruck> getRecentReviews();
+    @Query("SELECT * FROM reviews ORDER BY id")
+    List<ReviewEntity> getRecentReviews();
+
+    @Query("SELECT * FROM reviews WHERE food_truck_id=:food_truck_id")
+    List<ReviewEntity> getFoodTruckReviews(final int food_truck_id);
 
 }

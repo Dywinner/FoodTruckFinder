@@ -17,6 +17,6 @@ public interface FoodTruckDao {
     void insert(FoodTruck foodTruck);
 
     @Query("SELECT * FROM foodtrucks")
-    List<FoodTruck> getLocalFoodTrucks();
+    List<FoodTruckEntity> getLocalFoodTrucks();
 
 }
