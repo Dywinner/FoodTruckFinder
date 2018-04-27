@@ -31,19 +31,19 @@ public class ViewReviewActivity extends AppCompatActivity{
 
 
         nameText = (TextView) findViewById(R.id.textView1);
-        String pie3 = "Author: " + name;
+        String pie3 =  name;
         nameText.setText(pie3);
 
-        titleText = (TextView) findViewById(R.id.textView1);
-        String pie4 = "Author: " + title;
-        nameText.setText(pie4);
+        titleText = (TextView) findViewById(R.id.textView4);
+        String pie4 = title;
+        titleText.setText(pie4);
 
         descriptionText = (TextView) findViewById(R.id.textView2);
         String pie2 = "Description: " + description;
         descriptionText.setText(pie2);
 
         ratingText = (TextView) findViewById(R.id.textView3);
-        String pie = "rating: " + rating;
+        String pie = "Rating: " + rating;
         ratingText.setText(pie);
 
 

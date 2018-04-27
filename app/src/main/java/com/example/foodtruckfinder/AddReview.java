@@ -15,6 +15,7 @@ public class AddReview extends AppCompatActivity {
     EditText nameText;
     EditText descriptionText;
     EditText ratingText;
+    EditText titleText;
     Button btn;
 
     @Override
@@ -27,6 +28,7 @@ public class AddReview extends AppCompatActivity {
         nameText = (EditText) findViewById(R.id.name_text);
         descriptionText = (EditText) findViewById(R.id.description_text);
         ratingText = (EditText) findViewById(R.id.rating_text);
+        titleText = (EditText) findViewById(R.id.title_text);
         btn = (Button) findViewById(R.id.button);
 
 
@@ -35,7 +37,7 @@ public class AddReview extends AppCompatActivity {
                 String name = nameText.getText().toString();
                 String description = descriptionText.getText().toString();
                 String rating2 = ratingText.getText().toString();
-                String title = "pie";
+                String title = titleText.getText().toString();
                 int rating = Integer.parseInt(rating2);
 
 

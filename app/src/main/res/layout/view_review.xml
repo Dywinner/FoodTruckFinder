@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        tools:context="com.example.foodtruckfiner.com.example.foodtruckfinder.MainMapActivity">
+        tools:context="com.example.foodtruckfinder.ViewReviewActivity">
 
         <TextView
             android:id="@+id/textView1"
@@ -18,11 +18,20 @@
             android:text="Name" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/textView1"
         android:layout_below="@id/textView1"
+        android:textSize="24sp"
+        android:text="Title" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/textView1"
+        android:layout_below="@id/textView4"
         android:text="Rating" />
 
 

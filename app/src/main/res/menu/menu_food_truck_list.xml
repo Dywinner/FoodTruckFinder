@@ -8,15 +8,4 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/open_map"
-        android:title="open_map"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_gravity="right"
-        android:background="?attr/colorPrimary"
-        android:icon="@android:drawable/ic_menu_mylocation"
-        android:src="@android:drawable/ic_menu_mylocation"
-        android:visibility="visible"
-        app:showAsAction="always" />
 </menu>

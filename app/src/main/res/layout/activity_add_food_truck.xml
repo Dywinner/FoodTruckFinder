@@ -64,6 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/long_text"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:onClick="takePicture"
             android:text="Take Picture" />
@@ -73,6 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/takePictureButton"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:onClick="getImageFromLibrary"
             android:text="Image Library" />
@@ -81,8 +83,8 @@
             android:id="@+id/button"
             android:layout_width="@android:dimen/thumbnail_height"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageLibraryButton"
-            android:layout_gravity="center"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
             android:text="Save Food Truck" />
 
         <ImageView
@@ -90,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/button"
+            android:layout_below="@+id/imageLibraryButton"
             app:srcCompat="@android:color/background_light" />
 
     </RelativeLayout>

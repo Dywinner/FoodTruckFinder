@@ -16,7 +16,6 @@
             android:text="Name" />
 
 
-
         <EditText
             android:id="@+id/name_text"
             android:layout_width="fill_parent"
@@ -50,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/rating_text"
-        android:text="Rating" />
+        android:text="Title" />
 
     <EditText
         android:id="@+id/title_text"
