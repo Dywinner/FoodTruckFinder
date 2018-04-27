@@ -45,6 +45,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private GoogleMap mMap;
-    private Map<String, FoodTruck> localTrucks;
+    private List<FoodTruckEntity> localTrucks;
     private CameraPosition mCameraPosition;
 
     // The entry point to the Fused Location Provider.
@@ -123,12 +124,11 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        //TODO: replace with SQlite database
-        localTrucks = new HashMap<>();
+        //used to build database
+        localTrucks = new ArrayList<>();
 
         FoodTruckFinderDatabase db = FoodTruckFinderDatabase.getDatabase(this);
         foodTruckDao = db.getFoodTruckDao();
-
 
 
 
@@ -352,7 +352,9 @@ public class MainActivity extends AppCompatActivity implements
         return distance/2000;
     }
 
+
     private void getLocalTrucks(GeoLocation geoLocation, float radius) {
+
 
         GeoFire geoFire= new GeoFire(FirebaseDatabase.getInstance().getReference().child("geofire"));
         GeoQuery geoQuery = geoFire.queryAtLocation(geoLocation, radius);
@@ -370,11 +372,11 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        FoodTruck truck = dataSnapshot.child(key).getValue(FoodTruck.class);
-                        //System.out.println("Truck name: " + truck.getName());
-                        truck.setLatitude(location.latitude);
-                        truck.setLongitude(location.longitude);
-                        localTrucks.put(key, truck);
+                        FoodTruckEntity test = dataSnapshot.child(key).getValue(FoodTruckEntity.class);
+                        test.latitude = location.latitude;
+                        test.longitude = location.longitude;
+                        test.id = key;
+                        localTrucks.add(test);
 
                     }
 
@@ -423,13 +425,14 @@ public class MainActivity extends AppCompatActivity implements
         // find nearby food trucks from database and create markers
         GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
         getLocalTrucks(geoLocation, getCameraRadius());
+        buildDataBase();
 
-        for(FoodTruck truck: localTrucks.values()) {
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(truck.getLatitude(), truck.getLongitude()))
-                    .title(truck.getName())
-            ).setTag(truck);
-        }
+//        for(FoodTruck truck: localTrucks.values()) {
+//            mMap.addMarker(new MarkerOptions()
+//                    .position(new LatLng(truck.getLatitude(), truck.getLongitude()))
+//                    .title(truck.getName())
+//            ).setTag(truck);
+//        }
     }
 
     @Override
@@ -437,6 +440,28 @@ public class MainActivity extends AppCompatActivity implements
         System.out.println("Camera Idle");
 
         placeLocalMarkers();
+    }
+
+    public void buildDataBase() {
+        System.out.println("rebuilding database");
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                FoodTruckEntity[] temp = new FoodTruckEntity[localTrucks.size()];
+                for(int i = 0; i < localTrucks.size(); i++) {
+                    temp[i] = localTrucks.get(i);
+                }
+                foodTruckDao.insert(temp);
+                List<FoodTruckEntity> list = foodTruckDao.getLocalFoodTrucks();
+                for(FoodTruckEntity truck : list) {
+                    System.out.println(truck);
+                }
+
+                return null;
+            }
+
+
+        }.execute();
     }
 
     /**

@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.foodtruckfinder.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -58,6 +60,12 @@ public class ReviewsFragment extends Fragment {
                 Integer rating = data.getExtras().getInt("rating_data");
                 String title = data.getExtras().getString("title_data");
                 Review review = new Review(name,title, description, rating);
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                String id = ref.child("reviews").child("-LB-YIRZg77QJdhrKy4L").push().getKey();
+                ref.child("reviews").child("-LB-YIRZg77QJdhrKy4L").child(id).setValue(review);
+
+
                 items.add(review);
                 rvItems.getAdapter().notifyDataSetChanged();
             }

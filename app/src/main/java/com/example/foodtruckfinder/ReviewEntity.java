@@ -5,6 +5,7 @@ package com.example.foodtruckfinder;
  */
 
 import android.arch.persistence.room.*;
+import android.support.annotation.NonNull;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -13,12 +14,14 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 entity = FoodTruckEntity.class,
                 parentColumns = "id",
                 childColumns = "food_truck_id", onDelete = CASCADE
-        )
+        ),
+        indices = {@Index("food_truck_id")}
 )
 public class ReviewEntity {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey(autoGenerate = false)
+    @NonNull
+    public String id;
 
     @ColumnInfo(name = "name")
     public String name;
