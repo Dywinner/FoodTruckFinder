@@ -37,7 +37,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             // Your holder should contain a member variable
             // for any view that will be set as you render a row
             public TextView nameTextView;
-            public TextView descTextView;
+            public TextView titleTextView;
 
             // We also create a constructor that accepts the entire item row
             // and does the view lookups to find each subview
@@ -47,7 +47,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
                 super(itemView);
 
                 nameTextView = (TextView) itemView.findViewById(R.id.item_name);
-                descTextView = (TextView) itemView.findViewById(R.id.item_desc);
+                titleTextView = (TextView) itemView.findViewById(R.id.item_title);
                 //checkbox goes here
 
 
@@ -105,7 +105,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             textView1.setEnabled(false);
 
 
-            TextView textView2 = viewHolder.descTextView;
+            TextView textView2 = viewHolder.titleTextView;
             textView2.setText(item.getmTitle());
             textView2.setClickable(false);
             textView2.setActivated(false);

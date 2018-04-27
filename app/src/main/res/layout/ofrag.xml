@@ -5,7 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.foodtruckfinder.FoodTruckDetail$PlaceholderFragment">
+    tools:context="com.example.foodtruckfinder.FoodTruckDetail">
 
     <TextView
         android:id="@+id/section_label"
@@ -19,5 +19,15 @@
         app:layout_constraintTop_toTopOf="@+id/constraintLayout"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
+
+    <Button
+        android:id="@+id/shareTruckButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="openGmail"
+        android:paddingBottom="16dp"
+        android:text="Share Truck"
+        android:layout_gravity="center_vertical|center_horizontal"
+        />
 
 </android.support.constraint.ConstraintLayout>
