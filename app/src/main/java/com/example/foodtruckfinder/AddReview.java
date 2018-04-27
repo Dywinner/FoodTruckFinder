@@ -32,6 +32,7 @@ public class AddReview extends AppCompatActivity {
         descriptionText = (EditText) findViewById(R.id.description_text);
         titleText = (EditText) findViewById(R.id.title_text);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingfloat = 2.0f;
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
