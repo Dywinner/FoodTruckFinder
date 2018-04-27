@@ -95,6 +95,9 @@ public class FoodTruckDetail extends AppCompatActivity {
 
                 case 1:
                     ReviewsFragment rf = new ReviewsFragment();
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putString("food_truck_id_data", getIntent().getStringExtra("id_data"));
+                    rf.setArguments(bundle1);
                     return rf;
 
                 default:

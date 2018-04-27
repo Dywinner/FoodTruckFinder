@@ -135,4 +135,24 @@ public class DatabaseGenerator {
         }
     }
 
+    public List<ReviewEntity> getFoodTruckReviewEntityList(Integer food_truck_id) throws InterruptedException, ExecutionException, TimeoutException {
+        getFoodTruckReviewsAsyncTask getFoodTruckReviewsAsyncTask = new getFoodTruckReviewsAsyncTask(reviewDao);
+        getFoodTruckReviewsAsyncTask.execute(food_truck_id);
+        return getFoodTruckReviewsAsyncTask.get(30, TimeUnit.SECONDS);
+    }
+
+    private static class getFoodTruckReviewsAsyncTask extends AsyncTask<Integer, Void, List<ReviewEntity>> {
+        private ReviewDao mAsyncTaskDao;
+
+        getFoodTruckReviewsAsyncTask(ReviewDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected List<ReviewEntity> doInBackground(final Integer... params) {
+            return mAsyncTaskDao.getFoodTruckReviews(params[0]);
+        }
+
+    }
+
 }
