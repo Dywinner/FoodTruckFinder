@@ -82,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements
     private FloatingActionButton mFab;
     private DatabaseReference mDatabase;
 
+    private FoodTruckDao foodTruckDao;
+    private ReviewDao reviewDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +120,13 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        //TODO: replace with SQlite database
         localTrucks = new HashMap<>();
+
+        FoodTruckFinderDatabase db = FoodTruckFinderDatabase.getDatabase(this);
+        foodTruckDao = db.getFoodTruckDao();
+        
+
 
 
 
