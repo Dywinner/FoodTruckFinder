@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 
 import com.example.foodtruckfinder.R;
 
@@ -15,7 +16,9 @@ public class AddReview extends AppCompatActivity {
     EditText nameText;
     EditText descriptionText;
     EditText ratingText;
+    RatingBar ratingBar;
     EditText titleText;
+    Float ratingfloat;
     Button btn;
 
     @Override
@@ -29,17 +32,23 @@ public class AddReview extends AppCompatActivity {
         descriptionText = (EditText) findViewById(R.id.description_text);
         ratingText = (EditText) findViewById(R.id.rating_text);
         titleText = (EditText) findViewById(R.id.title_text);
-        btn = (Button) findViewById(R.id.button);
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
 
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                ratingfloat = v;
+            }
+        });
+
+        btn = (Button) findViewById(R.id.button);
 
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String name = nameText.getText().toString();
                 String description = descriptionText.getText().toString();
-                String rating2 = ratingText.getText().toString();
+                Integer rating = (Integer)Math.round(ratingfloat);
                 String title = titleText.getText().toString();
-                int rating = Integer.parseInt(rating2);
-
 
 
                 Intent intent = new Intent(AddReview.this, ReviewsFragment.class);
