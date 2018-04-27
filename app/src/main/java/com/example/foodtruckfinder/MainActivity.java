@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -44,6 +46,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -188,7 +191,31 @@ public class MainActivity extends AppCompatActivity implements
             String name = data.getStringExtra("name_data");
             String latitude = data.getStringExtra("lat_data");
             String longitude = data.getStringExtra("long_data");
-            System.out.println("we're in two, getting ready to test");
+            FoodTruckEntity truckEntity = new FoodTruckEntity(name, Double.parseDouble(latitude), Double.parseDouble(longitude));
+            final FoodTruckEntity[] trucks = new FoodTruckEntity[1];
+            trucks[0] = truckEntity;
+
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    foodTruckDao.insert(trucks);
+                    List<FoodTruckEntity> list = foodTruckDao.getLocalFoodTrucks();
+                    System.out.println(list.size());
+                    return null;
+                }
+
+
+            }.execute();
+
+
+
+
+
+
+            //foodTruckDao.insert(trucks);
+
+
+
         }
     }
 
