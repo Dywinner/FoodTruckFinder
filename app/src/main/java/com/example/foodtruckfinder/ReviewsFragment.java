@@ -56,7 +56,8 @@ public class ReviewsFragment extends Fragment {
                 String name = data.getExtras().getString("name_data");
                 String description = data.getExtras().getString("description_data");
                 Integer rating = data.getExtras().getInt("rating_data");
-                Review review = new Review(name, description, rating);
+                String title = data.getExtras().getString("title_data");
+                Review review = new Review(name,title, description, rating);
                 items.add(review);
                 rvItems.getAdapter().notifyDataSetChanged();
             }

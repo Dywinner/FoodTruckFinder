@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.foodtruckfinder">
+    package="com.example.foodtruckfiner">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -34,7 +34,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.foodtruckfinder.MainActivity"
+            android:name=".MainMapActivity"
             android:label="@string/title_activity_main_map">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,22 +42,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.foodtruckfinder.ViewReviewActivity"
+            android:name=".ViewReviewActivity"
             android:label="ViewReviewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.example.foodtruckfinder.FoodTruckDetail"
+            android:name=".FoodTruckList"
             android:label="@string/title_activity_food_truck_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.example.foodtruckfinder.AddReview"
+            android:name=".AddReview"
             android:label="@string/title_activity_add_review"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="com.example.foodtruckfinder.AddFoodTruck"
-            android:label="AddFoodTruck"
-            android:theme="@style/AppTheme.NoActionBar" />
-
     </application>
 
 </manifest>
