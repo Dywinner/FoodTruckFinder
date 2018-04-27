@@ -88,7 +88,7 @@ public class FoodTruckDetail extends AppCompatActivity {
     public void openGmail(View view) {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto", "abc@gmail.com", null));
-        String latLng = "(" + getIntent().getStringExtra("lat_data") + ", " + getIntent().getStringExtra("lon_data") + ")";
+        String latLng = "(" + String.valueOf(getIntent().getDoubleExtra("lat_data", 0.0)) + ", " + String.valueOf(getIntent().getDoubleExtra("long_data", 0.0)) + ")";
 
         emailIntent.putExtra(Intent.EXTRA_TEXT, latLng);
         startActivity(Intent.createChooser(emailIntent, null));
