@@ -45,7 +45,7 @@ public class ViewReviewActivity extends AppCompatActivity{
         descriptionText.setText(pie2);
 
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        ratingBar.setNumStars(rating);
+        ratingBar.setRating(rating);
 
 
     }

@@ -30,7 +30,6 @@ public class AddReview extends AppCompatActivity {
 
         nameText = (EditText) findViewById(R.id.name_text);
         descriptionText = (EditText) findViewById(R.id.description_text);
-        ratingText = (EditText) findViewById(R.id.rating_text);
         titleText = (EditText) findViewById(R.id.title_text);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
 
