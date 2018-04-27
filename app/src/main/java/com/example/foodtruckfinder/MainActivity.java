@@ -1,5 +1,6 @@
 package com.example.foodtruckfinder;
 
+import android.arch.persistence.room.Database;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -62,7 +63,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private GoogleMap mMap;
-    private List<FoodTruckEntity> localTrucks;
+    private FoodTruckEntity[] localTrucks;
+    private List<FoodTruckEntity> locals;
     private CameraPosition mCameraPosition;
 
     // The entry point to the Fused Location Provider.
@@ -125,7 +127,8 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         //used to build database
-        localTrucks = new ArrayList<>();
+
+        locals = new ArrayList<>();
 
         FoodTruckFinderDatabase db = FoodTruckFinderDatabase.getDatabase(this);
         foodTruckDao = db.getFoodTruckDao();
@@ -366,9 +369,9 @@ public class MainActivity extends AppCompatActivity implements
                 // check local list size, if too large, replace random marker
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("foodtrucks");
 
-
-                Query query = ref.orderByKey().equalTo(key);
+                Query query = ref.orderByKey().limitToFirst(20);
                 query.addValueEventListener(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -376,7 +379,8 @@ public class MainActivity extends AppCompatActivity implements
                         test.latitude = location.latitude;
                         test.longitude = location.longitude;
                         test.id = key;
-                        localTrucks.add(test);
+                        locals.add(test);
+
 
                     }
 
@@ -409,6 +413,13 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        localTrucks = new FoodTruckEntity[locals.size()];
+
+        // copy into database-friendly array
+        for(int i = 0; i < locals.size(); i++) {
+            localTrucks[i] = locals.get(i);
+        }
+
     }
 
     @Override
@@ -423,9 +434,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private void placeLocalMarkers() {
         // find nearby food trucks from database and create markers
-        GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
-        getLocalTrucks(geoLocation, getCameraRadius());
-        buildDataBase();
+
+
 
 //        for(FoodTruck truck: localTrucks.values()) {
 //            mMap.addMarker(new MarkerOptions()
@@ -439,23 +449,53 @@ public class MainActivity extends AppCompatActivity implements
     public void onCameraIdle() {
         System.out.println("Camera Idle");
 
-        placeLocalMarkers();
+
+        GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+        getLocalTrucks(geoLocation, getCameraRadius());
+
+        if(!locals.isEmpty()) {
+            placeLocalMarkers();
+
+            buildDataBase();
+        }
+
+
+    }
+
+    public ReviewEntity[] pullReviews(String food_truck_id) {
+        ReviewEntity[] reviewEntities = new ReviewEntity[20];
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+
+        Query query = ref.child("reviews").orderByKey().equalTo(food_truck_id).limitToFirst(20);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                System.out.println("reviews found!");
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // ...
+            }
+        });
+
+
+        return reviewEntities;
     }
 
     public void buildDataBase() {
         System.out.println("rebuilding database");
+        System.out.println(localTrucks);
+
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                FoodTruckEntity[] temp = new FoodTruckEntity[localTrucks.size()];
-                for(int i = 0; i < localTrucks.size(); i++) {
-                    temp[i] = localTrucks.get(i);
-                }
-                foodTruckDao.insert(temp);
-                List<FoodTruckEntity> list = foodTruckDao.getLocalFoodTrucks();
-                for(FoodTruckEntity truck : list) {
-                    System.out.println(truck);
-                }
+                // also insert reviews
+                foodTruckDao.insert(localTrucks);
+
 
                 return null;
             }
