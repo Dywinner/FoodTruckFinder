@@ -16,7 +16,6 @@
             android:text="Name" />
 
 
-
         <EditText
             android:id="@+id/name_text"
             android:layout_width="fill_parent"
@@ -27,30 +26,31 @@
 
 
 
-        <TextView
-            android:id="@+id/textRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView1"
-            android:layout_below="@+id/name_text"
-            android:text="Rating" />
+    <TextView
+        android:id="@+id/textRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/name_text"
+        android:text="Rating" />
 
-        <EditText
-            android:id="@+id/rating_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView1"
-            android:layout_below="@+id/textRating"
-            android:ems="10"
-            android:inputType="numberDecimal" />
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textRating"
+        android:numStars="5"
+        android:stepSize="1.0"
+        android:rating="2.0" />
+
 
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/rating_text"
-        android:text="Rating" />
+        android:layout_below="@+id/ratingBar"
+        android:text="Title" />
 
     <EditText
         android:id="@+id/title_text"

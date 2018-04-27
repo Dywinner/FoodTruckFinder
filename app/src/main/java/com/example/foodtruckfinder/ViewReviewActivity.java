@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.foodtruckfinder.R;
@@ -17,6 +18,7 @@ public class ViewReviewActivity extends AppCompatActivity{
     TextView titleText;
     TextView descriptionText;
     TextView ratingText;
+    RatingBar ratingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,21 +33,19 @@ public class ViewReviewActivity extends AppCompatActivity{
 
 
         nameText = (TextView) findViewById(R.id.textView1);
-        String pie3 = "Author: " + name;
+        String pie3 =  name;
         nameText.setText(pie3);
 
-        titleText = (TextView) findViewById(R.id.textView1);
-        String pie4 = "Author: " + title;
-        nameText.setText(pie4);
+        titleText = (TextView) findViewById(R.id.textView4);
+        String pie4 = title;
+        titleText.setText(pie4);
 
         descriptionText = (TextView) findViewById(R.id.textView2);
         String pie2 = "Description: " + description;
         descriptionText.setText(pie2);
 
-        ratingText = (TextView) findViewById(R.id.textView3);
-        String pie = "rating: " + rating;
-        ratingText.setText(pie);
-
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingBar.setRating(rating);
 
 
     }
