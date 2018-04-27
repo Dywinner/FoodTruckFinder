@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements
     private GoogleMap mMap;
     private FoodTruckEntity[] localTrucks;
     private List<FoodTruckEntity> locals;
+    private ReviewEntity[] reviewEntities;
+    private List<ReviewEntity> reviewEntityList;
     private CameraPosition mCameraPosition;
 
     // The entry point to the Fused Location Provider.
@@ -90,6 +94,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private FoodTruckDao foodTruckDao;
     private ReviewDao reviewDao;
+
+    private FoodTruckFinderDatabase db;
+
+    private DatabaseGenerator dbg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,8 +138,12 @@ public class MainActivity extends AppCompatActivity implements
 
         locals = new ArrayList<>();
 
-        FoodTruckFinderDatabase db = FoodTruckFinderDatabase.getDatabase(this);
-        foodTruckDao = db.getFoodTruckDao();
+//        FoodTruckFinderDatabase db = FoodTruckFinderDatabase.getDatabase(this);
+//        foodTruckDao = db.getFoodTruckDao();
+//        reviewDao = db.getReviewDao();
+
+        dbg = new DatabaseGenerator(getApplication());
+
 
 
 
@@ -282,12 +294,12 @@ public class MainActivity extends AppCompatActivity implements
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                FoodTruck temp = (FoodTruck) marker.getTag();
-                System.out.println(temp.getName());
+                FoodTruckEntity temp = (FoodTruckEntity) marker.getTag();
                 Intent intent = new Intent(MainActivity.this, FoodTruckDetail.class);
-                intent.putExtra("name_data", temp.getName());
-                intent.putExtra("lat_data", temp.getLatitude());
-                intent.putExtra("long_data", temp.getLongitude());
+                intent.putExtra("id_data", temp.id); // used to associate reviews
+                intent.putExtra("name_data", temp.name);
+                intent.putExtra("lat_data", temp.latitude);
+                intent.putExtra("long_data", temp.longitude);
 
                 startActivity(intent);
             }
@@ -357,6 +369,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private void getLocalTrucks(GeoLocation geoLocation, float radius) {
+        //locals = new ArrayList<>();
 
 
         GeoFire geoFire= new GeoFire(FirebaseDatabase.getInstance().getReference().child("geofire"));
@@ -379,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements
                         test.latitude = location.latitude;
                         test.longitude = location.longitude;
                         test.id = key;
+                        System.out.println(test);
                         locals.add(test);
 
 
@@ -413,12 +427,17 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        System.out.println(locals.size());
+
         localTrucks = new FoodTruckEntity[locals.size()];
+        System.out.println("localTrucks[] size: " + localTrucks.length);
 
         // copy into database-friendly array
         for(int i = 0; i < locals.size(); i++) {
-            localTrucks[i] = locals.get(i);
+            localTrucks[i] = (FoodTruckEntity) locals.get(i);
         }
+
+        if(localTrucks.length > 0) System.out.println(localTrucks[0]);
 
     }
 
@@ -433,75 +452,78 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void placeLocalMarkers() {
-        // find nearby food trucks from database and create markers
-
-
-
-//        for(FoodTruck truck: localTrucks.values()) {
-//            mMap.addMarker(new MarkerOptions()
-//                    .position(new LatLng(truck.getLatitude(), truck.getLongitude()))
-//                    .title(truck.getName())
-//            ).setTag(truck);
-//        }
+        for(FoodTruckEntity truckEntity: locals) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(truckEntity.latitude, truckEntity.longitude))
+                    .title(truckEntity.name)
+            ).setTag(truckEntity);
+        }
     }
 
     @Override
     public void onCameraIdle() {
         System.out.println("Camera Idle");
+        List<FoodTruckEntity> list = null;
 
-
-        GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
-        getLocalTrucks(geoLocation, getCameraRadius());
-
-        if(!locals.isEmpty()) {
-            placeLocalMarkers();
-
-            buildDataBase();
+        try {
+             list = dbg.getFoodTruckEntityList();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
         }
+
+        for(FoodTruckEntity truck: list) {
+            System.out.println(truck);
+        }
+
+//
+//        GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+//        getLocalTrucks(geoLocation, getCameraRadius());
+//
+//        if(!locals.isEmpty()) {
+//            System.out.println("hello");
+//            placeLocalMarkers();
+//
+//            buildDataBase();
+//        }
 
 
     }
 
-    public ReviewEntity[] pullReviews(String food_truck_id) {
+    public ReviewEntity[] pullReviews() {
         ReviewEntity[] reviewEntities = new ReviewEntity[20];
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-
-        Query query = ref.child("reviews").orderByKey().equalTo(food_truck_id).limitToFirst(20);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                System.out.println("reviews found!");
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // ...
-            }
-        });
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+//
+//
+//        Query query = ref.child("reviews").orderByKey().equalTo(food_truck_id).limitToFirst(20);
+//        query.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                System.out.println("reviews found!");
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                // ...
+//            }
+//        });
 
 
         return reviewEntities;
     }
 
     public void buildDataBase() {
-        System.out.println("rebuilding database");
-        System.out.println(localTrucks);
+//        System.out.println("rebuilding database");
+//
+//        FoodTruckFinderDatabase db = FoodTruckFinderDatabase.getDatabase(this);
+//
+//        DatabaseGenerator.with(db, localTrucks, reviewEntities).buildDatabase();
 
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                // also insert reviews
-                foodTruckDao.insert(localTrucks);
-
-
-                return null;
-            }
-
-
-        }.execute();
     }
 
     /**
