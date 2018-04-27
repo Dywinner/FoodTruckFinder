@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         //used to build database
-        dbg = new DatabaseGenerator(getApplication());
+        dbg = new DatabaseGenerator(this.getApplication());
 
 
 
@@ -183,7 +183,11 @@ public class MainActivity extends AppCompatActivity implements
 
                     });
 
-            placeLocalMarkers();
+            try {
+                placeLocalMarkers();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             //mDatabase.child("foodtrucks").push().setValue(truck);
         }
@@ -274,12 +278,20 @@ public class MainActivity extends AppCompatActivity implements
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
+        //dbg.clearDatabase();
 
         GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
-        getLocalTrucks(geoLocation, getCameraRadius());
 
-        placeLocalMarkers();
+        getLocalTrucks(geoLocation, getCameraRadius());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(geoLocation.latitude, geoLocation.longitude)));
+
+        pullReviews();
+
+        try {
+            placeLocalMarkers();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -353,6 +365,7 @@ public class MainActivity extends AppCompatActivity implements
                         test.longitude = location.longitude;
                         test.id = key;
                         //write to local database from firebase
+                        //System.out.println(test);
                         dbg.insertFoodTruckEntity(test);
 
 
@@ -393,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onCameraMove() {
-
+        //dbg.clearDatabase();
     }
 
     @Override
@@ -401,7 +414,8 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private void placeLocalMarkers() {
+    private void placeLocalMarkers() throws InterruptedException {
+        //dbg.clearDatabase();
         List<FoodTruckEntity> foodTruckEntityList = new ArrayList<>();
 
         try {
@@ -414,6 +428,8 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
+        System.out.println("size in place:: " + foodTruckEntityList.size());
+
         for(FoodTruckEntity truckEntity: foodTruckEntityList) {
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(truckEntity.latitude, truckEntity.longitude))
@@ -425,38 +441,75 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onCameraIdle() {
         // clear database
-        dbg.clearDatabase();
+        //dbg.clearDatabase();
 
         GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
 
         getLocalTrucks(geoLocation, getCameraRadius());
 
-        placeLocalMarkers();
+        pullReviews();
+
+        try {
+            placeLocalMarkers();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    public ReviewEntity[] pullReviews() {
-        ReviewEntity[] reviewEntities = new ReviewEntity[20];
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//
-//
-//        Query query = ref.child("reviews").orderByKey().equalTo(food_truck_id).limitToFirst(20);
-//        query.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                System.out.println("reviews found!");
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                // ...
-//            }
-//        });
+    public void pullReviews() {
+        System.out.print("here");
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        List<FoodTruckEntity> foodTruckEntityList = new ArrayList<>();
+
+        try {
+            foodTruckEntityList = dbg.getFoodTruckEntityList();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+        for(final FoodTruckEntity truckEntity: foodTruckEntityList) {
+            System.out.println("id: " + truckEntity.id);
+            Query query = ref.child("reviews").child(truckEntity.id).orderByKey();
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                        ReviewEntity reviewEntity = snapshot.getValue(ReviewEntity.class);
+                        reviewEntity.id = snapshot.getKey();
+                        reviewEntity.foodTruckId = truckEntity.id;
+                        dbg.insertReviewEntity(reviewEntity);
+                    }
+
+//                    ReviewEntity reviewEntity = dataSnapshot.getValue(ReviewEntity.class);
+//                    if(reviewEntity != null) {
+//                        reviewEntity.id = dataSnapshot.getKey();
+//                        reviewEntity.foodTruckId = truckEntity.id;
+//                        System.out.println(reviewEntity);
+//                        dbg.insertReviewEntity(reviewEntity);
+//                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // ...
+                }
+            });
+        }
 
 
-        return reviewEntities;
+
+
+
+
+
+
     }
 
 

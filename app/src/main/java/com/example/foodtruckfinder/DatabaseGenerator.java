@@ -130,7 +130,7 @@ public class DatabaseGenerator {
         @Override
         protected Void doInBackground(final FoodTruckEntity... params) {
             mAsyncTaskDao.insert(params[0]);
-            System.out.println("we wrote: " + mAsyncTaskDao.getLocalFoodTrucks().size());
+            System.out.println("inside dbg: " + params[0]);
             return null;
         }
     }

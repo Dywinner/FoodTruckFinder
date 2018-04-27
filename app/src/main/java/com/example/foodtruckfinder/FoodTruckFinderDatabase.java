@@ -25,7 +25,7 @@ public abstract class FoodTruckFinderDatabase extends RoomDatabase{
             synchronized (FoodTruckFinderDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            FoodTruckFinderDatabase.class, "word_database")
+                            FoodTruckFinderDatabase.class, "food_truck_database")
                             .build();
 
                 }

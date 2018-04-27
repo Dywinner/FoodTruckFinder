@@ -38,6 +38,11 @@ public class ReviewEntity {
     @ColumnInfo(name = "food_truck_id")
     public String foodTruckId;
 
+    @Ignore
+    public ReviewEntity() {
+
+    }
+
     public ReviewEntity(String name, String title, String description, int rating) {
         this.name = name;
         this.title = title;
@@ -47,7 +52,13 @@ public class ReviewEntity {
 
     @Override
     public String toString() {
-        return "{ReviewEntity: id=" + id + " {food_truck_id=" + foodTruckId + "} }";
+        return "{ReviewEntity: id=" + id + " " +
+                "{food_truck_id=" + foodTruckId +
+                ", name=" + name +
+                ", title=" + title +
+                ", description" + description +
+                ", rating" + rating +
+                "} }";
     }
 
 }
