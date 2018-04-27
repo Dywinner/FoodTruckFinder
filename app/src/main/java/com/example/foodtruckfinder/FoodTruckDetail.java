@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class FoodTruckDetail extends AppCompatActivity {
 
@@ -41,8 +42,11 @@ public class FoodTruckDetail extends AppCompatActivity {
             }
         });
 
+        TextView title = (TextView) findViewById(R.id.toolbar_title);
+        title.setText(getIntent().getStringExtra("name_data"));
 
-        toolbar.setTitle(getIntent().getStringExtra("name_data"));
+
+        toolbar.setTitle("");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -84,8 +88,8 @@ public class FoodTruckDetail extends AppCompatActivity {
                     OverviewFragment of = new OverviewFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("name_data", getIntent().getStringExtra("name_data"));
-                    bundle.putString("long_data", getIntent().getStringExtra("long_data"));
-                    bundle.putString("lat_data", getIntent().getStringExtra("lat_data"));
+                    bundle.putString("long_data", String.valueOf(getIntent().getDoubleExtra("long_data", 0.0)));
+                    bundle.putString("lat_data", String.valueOf(getIntent().getDoubleExtra("lat_data", 0.0)));
                     of.setArguments(bundle);
                     return of;
 

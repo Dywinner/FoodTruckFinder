@@ -23,12 +23,19 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#303F9F"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/">
+            app:title=""
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/toolbar_title" />
 
 
 
-        </android.support.v7.widget.Toolbar>
+
+            </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
