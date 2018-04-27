@@ -11,7 +11,7 @@ import android.arch.persistence.room.Entity;
 @android.arch.persistence.room.Database(
         entities = { FoodTruckEntity.class, ReviewEntity.class },
         version = 1)
-public abstract class Database extends RoomDatabase{
+public abstract class FoodTruckFinderDatabase extends RoomDatabase{
 
     public abstract FoodTruckDao getFoodTruckDao();
     public abstract ReviewDao getReviewDao();
