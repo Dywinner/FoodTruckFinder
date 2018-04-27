@@ -8,6 +8,22 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+
+    <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
+    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
+
 
     <application
         android:allowBackup="true"
@@ -16,6 +32,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -34,7 +54,6 @@
             android:label="@string/title_activity_main_map">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,13 +62,27 @@
             android:label="ViewReviewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.example.foodtruckfinder.FoodTruckList"
+            android:name="com.example.foodtruckfinder.FoodTruckDetail"
             android:label="@string/title_activity_food_truck_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.example.foodtruckfinder.AddReview"
             android:label="@string/title_activity_add_review"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.example.foodtruckfinder.AddFoodTruck"
+            android:label="AddFoodTruck"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.foodtruckfinder"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 
 </manifest>

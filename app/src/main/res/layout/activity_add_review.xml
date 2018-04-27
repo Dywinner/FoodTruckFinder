@@ -3,7 +3,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        tools:context="com.example.foodtruckfiner.com.example.foodtruckfinder.MainMapActivity">
+        tools:context="com.example.foodtruckfinder.MainActivity">
 
         <TextView
             android:id="@+id/textView1"
@@ -16,7 +16,6 @@
             android:text="Name" />
 
 
-
         <EditText
             android:id="@+id/name_text"
             android:layout_width="fill_parent"
@@ -26,30 +25,48 @@
             android:ems="10" />
 
 
-        <TextView
-            android:id="@+id/textRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView1"
-            android:layout_below="@+id/name_text"
-            android:text="Rating" />
 
-        <EditText
-            android:id="@+id/rating_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView1"
-            android:layout_below="@+id/textRating"
-            android:ems="10"
-            android:inputType="numberDecimal" />
+    <TextView
+        android:id="@+id/textRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/name_text"
+        android:text="Rating" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView1"
-            android:layout_below="@+id/rating_text"
-            android:text="Description" />
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textRating"
+        android:numStars="5"
+        android:stepSize="1.0"
+        android:rating="2.0" />
+
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/ratingBar"
+        android:text="Title" />
+
+    <EditText
+        android:id="@+id/title_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textTitle"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/title_text"
+        android:text="Description" />
 
     <EditText
         android:id="@+id/description_text"
