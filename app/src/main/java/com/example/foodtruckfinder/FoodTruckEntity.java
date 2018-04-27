@@ -21,8 +21,7 @@ public class FoodTruckEntity {
     @ColumnInfo(name = "longitude")
     public Double longitude;
 
-    public FoodTruckEntity(String id, String name, Double latitude, Double longitude) {
-        this.id = id;
+    public FoodTruckEntity(String name, Double latitude, Double longitude) {
         this. name = name;
         this.latitude = latitude;
         this.longitude = longitude;
