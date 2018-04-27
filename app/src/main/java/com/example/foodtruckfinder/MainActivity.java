@@ -200,7 +200,9 @@ public class MainActivity extends AppCompatActivity implements
                 protected Void doInBackground(Void... params) {
                     foodTruckDao.insert(trucks);
                     List<FoodTruckEntity> list = foodTruckDao.getLocalFoodTrucks();
-                    System.out.println(list.size());
+                    System.out.println(
+                            list.get(list.size() - 1).id + ", " + list.get(list.size() - 1).latitude + ", " + list.get(list.size() - 1).longitude + ", " + list.get(list.size() - 1).name);
+
                     return null;
                 }
 
@@ -244,8 +246,7 @@ public class MainActivity extends AppCompatActivity implements
                         Intent intent = new Intent(MainActivity.this, AddFoodTruck.class);
                         intent.putExtra("lat_data", tempLatLng.latitude);
                         intent.putExtra("long_data", tempLatLng.longitude);
-                        startActivityForResult(intent, 1);
-                        finish();
+                        startActivityForResult(intent, 2);
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
