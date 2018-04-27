@@ -22,4 +22,7 @@ public interface ReviewDao {
     @Query("SELECT * FROM reviews WHERE food_truck_id=:food_truck_id")
     List<ReviewEntity> getFoodTruckReviews(final int food_truck_id);
 
+    @Query("DELETE FROM reviews")
+    void deleteAll();
+
 }

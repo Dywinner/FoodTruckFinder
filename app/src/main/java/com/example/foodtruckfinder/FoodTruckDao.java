@@ -19,4 +19,7 @@ public interface FoodTruckDao {
     @Query("SELECT * FROM foodtrucks")
     List<FoodTruckEntity> getLocalFoodTrucks();
 
+    @Query("DELETE FROM foodtrucks")
+    void deleteAll();
+
 }

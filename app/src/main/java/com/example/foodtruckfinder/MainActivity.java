@@ -65,10 +65,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private GoogleMap mMap;
-    private FoodTruckEntity[] localTrucks;
-    private List<FoodTruckEntity> locals;
-    private ReviewEntity[] reviewEntities;
-    private List<ReviewEntity> reviewEntityList;
+
     private CameraPosition mCameraPosition;
 
     // The entry point to the Fused Location Provider.
@@ -91,11 +88,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private FloatingActionButton mFab;
     private DatabaseReference mDatabase;
-
-    private FoodTruckDao foodTruckDao;
-    private ReviewDao reviewDao;
-
-    private FoodTruckFinderDatabase db;
 
     private DatabaseGenerator dbg;
 
@@ -134,14 +126,8 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+
         //used to build database
-
-        locals = new ArrayList<>();
-
-//        FoodTruckFinderDatabase db = FoodTruckFinderDatabase.getDatabase(this);
-//        foodTruckDao = db.getFoodTruckDao();
-//        reviewDao = db.getReviewDao();
-
         dbg = new DatabaseGenerator(getApplication());
 
 
@@ -203,34 +189,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         if(resultCode == 2) {
-            String name = data.getStringExtra("name_data");
-            String latitude = data.getStringExtra("lat_data");
-            String longitude = data.getStringExtra("long_data");
-            FoodTruckEntity truckEntity = new FoodTruckEntity(name, Double.parseDouble(latitude), Double.parseDouble(longitude));
-            final FoodTruckEntity[] trucks = new FoodTruckEntity[1];
-            trucks[0] = truckEntity;
-
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... params) {
-                    foodTruckDao.insert(trucks);
-                    List<FoodTruckEntity> list = foodTruckDao.getLocalFoodTrucks();
-                    System.out.println(
-                            list.get(list.size() - 1).id + ", " + list.get(list.size() - 1).latitude + ", " + list.get(list.size() - 1).longitude + ", " + list.get(list.size() - 1).name);
-
-                    return null;
-                }
-
-
-            }.execute();
-
-
-
-
-
-
-            //foodTruckDao.insert(trucks);
-
 
 
         }
@@ -318,6 +276,9 @@ public class MainActivity extends AppCompatActivity implements
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
+        GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
+        getLocalTrucks(geoLocation, getCameraRadius());
+
         placeLocalMarkers();
 
     }
@@ -369,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private void getLocalTrucks(GeoLocation geoLocation, float radius) {
-        //locals = new ArrayList<>();
 
 
         GeoFire geoFire= new GeoFire(FirebaseDatabase.getInstance().getReference().child("geofire"));
@@ -392,8 +352,8 @@ public class MainActivity extends AppCompatActivity implements
                         test.latitude = location.latitude;
                         test.longitude = location.longitude;
                         test.id = key;
-                        System.out.println(test);
-                        locals.add(test);
+                        //write to local database from firebase
+                        dbg.insertFoodTruckEntity(test);
 
 
                     }
@@ -427,17 +387,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        System.out.println(locals.size());
 
-        localTrucks = new FoodTruckEntity[locals.size()];
-        System.out.println("localTrucks[] size: " + localTrucks.length);
-
-        // copy into database-friendly array
-        for(int i = 0; i < locals.size(); i++) {
-            localTrucks[i] = (FoodTruckEntity) locals.get(i);
-        }
-
-        if(localTrucks.length > 0) System.out.println(localTrucks[0]);
 
     }
 
@@ -452,7 +402,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void placeLocalMarkers() {
-        for(FoodTruckEntity truckEntity: locals) {
+        List<FoodTruckEntity> foodTruckEntityList = new ArrayList<>();
+
+        try {
+            foodTruckEntityList = dbg.getFoodTruckEntityList();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+        for(FoodTruckEntity truckEntity: foodTruckEntityList) {
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(truckEntity.latitude, truckEntity.longitude))
                     .title(truckEntity.name)
@@ -462,34 +424,14 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onCameraIdle() {
-        System.out.println("Camera Idle");
-        List<FoodTruckEntity> list = null;
+        // clear database
+        dbg.clearDatabase();
 
-        try {
-             list = dbg.getFoodTruckEntityList();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+        GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
 
-        for(FoodTruckEntity truck: list) {
-            System.out.println(truck);
-        }
+        getLocalTrucks(geoLocation, getCameraRadius());
 
-//
-//        GeoLocation geoLocation = new GeoLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude);
-//        getLocalTrucks(geoLocation, getCameraRadius());
-//
-//        if(!locals.isEmpty()) {
-//            System.out.println("hello");
-//            placeLocalMarkers();
-//
-//            buildDataBase();
-//        }
-
+        placeLocalMarkers();
 
     }
 
@@ -517,14 +459,6 @@ public class MainActivity extends AppCompatActivity implements
         return reviewEntities;
     }
 
-    public void buildDataBase() {
-//        System.out.println("rebuilding database");
-//
-//        FoodTruckFinderDatabase db = FoodTruckFinderDatabase.getDatabase(this);
-//
-//        DatabaseGenerator.with(db, localTrucks, reviewEntities).buildDatabase();
-
-    }
 
     /**
      * Gets the current location of the device, and positions the map's camera.

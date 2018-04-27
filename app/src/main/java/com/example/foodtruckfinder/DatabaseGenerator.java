@@ -32,7 +32,27 @@ public class DatabaseGenerator {
 
     }
 
+    public void clearDatabase() {
+        new clearDatabaseAsyncTask(foodTruckDao, reviewDao).execute();
+    }
 
+    private static class clearDatabaseAsyncTask extends AsyncTask<Void, Void, Void> {
+        private FoodTruckDao foodTruckDao;
+        private ReviewDao reviewDao;
+
+        clearDatabaseAsyncTask(FoodTruckDao fDao, ReviewDao rDao) {
+            foodTruckDao = fDao;
+            reviewDao = rDao;
+        }
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            foodTruckDao.deleteAll();
+            reviewDao.deleteAll();
+            return null;
+        }
+
+    }
 
     public void insertReviewEntity(ReviewEntity reviewEntity) {
         new insertReviewAsyncTask(reviewDao).execute(reviewEntity);

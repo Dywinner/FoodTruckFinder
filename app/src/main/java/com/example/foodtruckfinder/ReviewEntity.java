@@ -45,4 +45,9 @@ public class ReviewEntity {
         this.rating = rating;
     }
 
+    @Override
+    public String toString() {
+        return "{ReviewEntity: id=" + id + " {food_truck_id=" + foodTruckId + "} }";
+    }
+
 }
