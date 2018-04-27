@@ -3,9 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    tools:context="com.example.foodtruckfinder.AddFoodTruck">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.foodtruckfinder.AddFoodTruck"
+    android:fillViewport="true">
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,48 +32,38 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="18dp"
+            android:layout_below="@+id/name_text"
             android:text="Latitude" />
 
         <EditText
             android:id="@+id/lat_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@+id/textView2"
-            android:layout_marginTop="@+id/textView2"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView2"
             android:ems="10" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="18dp"
-            android:text="Latitude" />
+            android:layout_below="@+id/lat_text"
+            android:text="longitude" />
 
         <EditText
             android:id="@+id/long_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@+id/textView3"
-            android:layout_marginTop="@+id/textView3"
+            android:layout_below="@+id/textView3"
+            android:layout_alignParentStart="true"
             android:ems="10" />
 
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/long_text"
-            app:srcCompat="@android:color/background_light" />
 
         <Button
             android:id="@+id/takePictureButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView"
+            android:layout_below="@+id/long_text"
             android:layout_gravity="center"
             android:onClick="takePicture"
             android:text="Take Picture" />
@@ -92,6 +84,14 @@
             android:layout_below="@+id/imageLibraryButton"
             android:layout_gravity="center"
             android:text="Save Food Truck" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/button"
+            app:srcCompat="@android:color/background_light" />
 
     </RelativeLayout>
 
