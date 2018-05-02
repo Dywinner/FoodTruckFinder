@@ -11,6 +11,9 @@ import com.example.foodtruckfinder.R;
 
 import java.util.ArrayList;
 
+/**
+* Unused Fragment, will update with RecyclerView of nearby FoodTrucks
+*/
 public class NearbyFragment extends Fragment {
 
     @Override

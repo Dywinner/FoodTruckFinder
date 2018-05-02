@@ -15,6 +15,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+/*Overview fragment stores the identifying information of a food truck*/
 public class OverviewFragment extends Fragment {
 
     private ImageView imageView;
@@ -25,7 +26,12 @@ public class OverviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
+        /*Inflates the rootview of the fragment with the xml file*/
+
         View rootView = inflater.inflate(R.layout.ofrag, container, false);
+
+        /*Populates TextViews with the name, longitude and latitude data*/
+         /*Will update with more information once we figure out how to store that information into Firebase*/
 
         nameText = (TextView) rootView.findViewById(R.id.name_text);
         String pie3 =  getArguments().getString("name_data");

@@ -95,23 +95,24 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Retrieve location and camera position from saved instance state.
+        /*Retrieve location and camera position from saved instance state.*/
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        // Retrieve the content view that renders the map.
+        /* Retrieve the content view that renders the map.*/
         setContentView(R.layout.activity_main);
 
-        // Construct a FusedLocationProviderClient.
+        /* Construct a FusedLocationProviderClient.*/
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Build the map.
+        /* Build the map.*/
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        /*Adds a Floating Action Button to add a foodtruck at the current location*/
         mFab = findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,13 +122,15 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
-        //used to build database
+        /*used to build database*/
         dbg = new DatabaseGenerator(this.getApplication());
 
 
 
 
     }
+
+    /*Method to add a food truck based on the latitude and longitude data of the last known location*/
 
     private boolean addFoodTruck(View view) {
 
@@ -145,10 +148,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    /*Method to populate the map with a marker base don the longitude and latitude data of food truck*/
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == 1) { //addFoodTruck
+        if(resultCode == 1) { /*addFoodTruck*/
             String name = data.getStringExtra("name_data");
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
@@ -192,9 +197,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    /**
-     * Saves the state of the map when the activity is paused.
-     */
+
+     /* Saves the state of the map when the activity is paused.*/
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mMap != null) {
@@ -204,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
+        /* Method to add a food truck at a selected map location .*/
     @Override
     public void onMapLongClick(LatLng latLng) {
         final LatLng tempLatLng = latLng;
@@ -226,6 +231,8 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         };
+
+        /*Dialog box to confirm adding a food Truck*/
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Add new Food Truck here?").setPositiveButton("Yes", dialogClickListener)
@@ -292,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Function: getCameraRadius
      *
-     * @return returns radius in kilometers
+     * returns radius in kilometers
      *
      */
     private float getCameraRadius() {

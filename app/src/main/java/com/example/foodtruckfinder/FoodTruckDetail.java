@@ -20,6 +20,8 @@ import android.widget.TextView;
 public class FoodTruckDetail extends AppCompatActivity {
 
 
+    /*Activity that Contains the Review and Overview Fragments*/
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
@@ -30,11 +32,15 @@ public class FoodTruckDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_truck_detail);
 
+        /*Creates a toolbar with a button to navigate back to the Map*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        /*sets the navigation icon to a back arrow*/
         toolbar.setNavigationIcon(R.drawable.ic_action_back);
+
+        /*OnClickListener to navigate back map Activity*/
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,15 +53,18 @@ public class FoodTruckDetail extends AppCompatActivity {
 
 
         toolbar.setTitle("");
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+        /* Create the adapter that will return a fragment for each of the two */
+        /* primary sections of the activity.*/
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
+        /* Set up the ViewPager with the sections adapter*/
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        /*Creates the TabLayout for the two fragments*/
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+        /*Adds a page change listener to detect switching between the tabs. */
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -81,12 +90,13 @@ public class FoodTruckDetail extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return either an OverviewFragment or ReviewsFragment class).
+            /* getItem is called to instantiate the fragment for the given page.*/
+            /* Return either an OverviewFragment or ReviewsFragment class).*/
             switch (position) {
                 case 0:
                     OverviewFragment of = new OverviewFragment();
                     Bundle bundle = new Bundle();
+                    /*Populates a bundle with name and geolocation data and sends it to the Overview Fragment*/
                     bundle.putString("name_data", getIntent().getStringExtra("name_data"));
                     bundle.putString("long_data", String.valueOf(getIntent().getDoubleExtra("long_data", 0.0)));
                     bundle.putString("lat_data", String.valueOf(getIntent().getDoubleExtra("lat_data", 0.0)));
@@ -96,6 +106,7 @@ public class FoodTruckDetail extends AppCompatActivity {
                 case 1:
                     ReviewsFragment rf = new ReviewsFragment();
                     Bundle bundle1 = new Bundle();
+                    /*Populates a bundle with id of the truck and sends it to the ReviewFragment*/
                     bundle1.putString("food_truck_id_data", getIntent().getStringExtra("id_data"));
                     rf.setArguments(bundle1);
                     return rf;

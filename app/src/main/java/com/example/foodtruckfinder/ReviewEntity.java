@@ -8,8 +8,10 @@ import android.arch.persistence.room.*;
 import android.support.annotation.NonNull;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
+/*Defines a database entity for the Review Object*/
 
 @Entity(tableName = "reviews",
+        /*Foreign key definition for the Review Entity */
         foreignKeys = @ForeignKey(
                 entity = FoodTruckEntity.class,
                 parentColumns = "id",
@@ -18,6 +20,8 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         indices = {@Index("food_truck_id")}
 )
 public class ReviewEntity {
+
+    /*Columns for the Review Entity object in the table*/
 
     @PrimaryKey(autoGenerate = false)
     @NonNull
@@ -43,6 +47,7 @@ public class ReviewEntity {
 
     }
 
+    /*Constructor for the Review Entity*/
     public ReviewEntity(String name, String title, String description, int rating) {
         this.name = name;
         this.title = title;
@@ -50,6 +55,7 @@ public class ReviewEntity {
         this.rating = rating;
     }
 
+    /*toString method*/
     @Override
     public String toString() {
         return "{ReviewEntity: id=" + id + " " +

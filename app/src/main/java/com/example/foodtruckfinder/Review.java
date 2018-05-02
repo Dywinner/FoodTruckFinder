@@ -4,12 +4,18 @@ import android.support.design.internal.ParcelableSparseArray;
 
 import java.util.ArrayList;
 
+/*Review class used to store user input from the AddReview Activity*/
+
 public class Review extends ParcelableSparseArray {
+
+    /*Member Variables*/
 
     private String mName;
     private String mTitle;
     private String mDescription;
     private int mRating;
+
+    /*Constructor*/
 
     public Review(String name, String title, String description, int rating) {
         mName = name;
@@ -45,6 +51,8 @@ public class Review extends ParcelableSparseArray {
     public Integer getmRating(){ return mRating;}
 
     public void setmRating(Integer rating) {mRating = rating;}
+
+    /*Method to create a sample list of Reviews. Used to test of the Recyler list can load the list of items */
 
     public static ArrayList<Review> createInitialBucketList(int numItems) {
         ArrayList<Review> reviewItems = new ArrayList<Review>();
