@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-Goals Accomplished this Milestone
+FoodTruckFinder
 
-- Added the basic template for Reviews- Will edit later to add titles and a better rating system
-- Added a basic Map view which will connect to the Fragments later
-- Added a review bucketlist and adapter to properly display the Review Objects
-- Added Tabs/Fragments for Overview and Nearby which will later hold Overview Information and Nearby Food Trucks Respectively
-- Added a Location button which for now goes back to the Main Screen but will be used to relocate the android phone and go back to the main map
-=======
-# FoodTruckFinder
->>>>>>> 169fc34773f847c5e77e71a48c4c2e960bc6745c
+Application developed for the Final Project of CS4720 Programming for Mobile Application Development.
+Group project between Sam Prescott and Dylan Nguyen.
+Comments are added for the sections that Dylan Nguyen has completed. 
